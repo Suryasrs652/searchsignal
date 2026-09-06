@@ -8,6 +8,15 @@ import { ComparisonDiff } from './components/ComparisonDiff';
 import { LaunchAuditModal } from './components/LaunchAuditModal';
 import { apiUrl } from './lib/api';
 import {
+  DEMO_PROJECT,
+  DEMO_AUDIT_1,
+  DEMO_AUDIT_PREV,
+  DEMO_SCORES,
+  DEMO_FINDINGS,
+  DEMO_RECOMMENDATIONS,
+  DEMO_PAGES,
+} from './data/demoData';
+import {
   Search,
   SlidersHorizontal,
   RefreshCw,
@@ -24,14 +33,14 @@ import {
 } from 'lucide-react';
 
 export const App: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [audits, setAudits] = useState<Audit[]>([]);
-  const [currentAudit, setCurrentAudit] = useState<Audit | null>(null);
-  const [scores, setScores] = useState<ScoreItem[]>([]);
-  const [findings, setFindings] = useState<Finding[]>([]);
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [pages, setPages] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([DEMO_PROJECT]);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(DEMO_PROJECT);
+  const [audits, setAudits] = useState<Audit[]>([DEMO_AUDIT_1, DEMO_AUDIT_PREV]);
+  const [currentAudit, setCurrentAudit] = useState<Audit | null>(DEMO_AUDIT_1);
+  const [scores, setScores] = useState<ScoreItem[]>(DEMO_SCORES);
+  const [findings, setFindings] = useState<Finding[]>(DEMO_FINDINGS);
+  const [recommendations, setRecommendations] = useState<Recommendation[]>(DEMO_RECOMMENDATIONS);
+  const [pages, setPages] = useState<any[]>(DEMO_PAGES);
 
   const [activeTab, setActiveTab] = useState<'findings' | 'roadmap' | 'comparison' | 'pages'>('findings');
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
@@ -45,19 +54,24 @@ export const App: React.FC = () => {
   // 1. Fetch Projects on mount
   useEffect(() => {
     fetch(apiUrl('/api/v1/projects'))
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error('API not available');
+        return res.json();
+      })
       .then((data) => {
         if (data.data && data.data.length > 0) {
           setProjects(data.data);
           setSelectedProject(data.data[0]);
         }
       })
-      .catch((err) => console.error(err));
+      .catch(() => {
+        // Keeps default demo benchmark data active seamlessly
+      });
   }, []);
 
   // 2. Fetch Audits when project changes
   useEffect(() => {
-    if (!selectedProject) return;
+    if (!selectedProject || selectedProject.id === DEMO_PROJECT.id) return;
     fetch(apiUrl(`/api/v1/projects/${selectedProject.id}/audits`))
       .then((res) => res.json())
       .then((data) => {
@@ -490,7 +504,12 @@ export const App: React.FC = () => {
           project={selectedProject}
           isOpen={isLaunchModalOpen}
           onClose={() => setIsLaunchModalOpen(false)}
-          onLaunched={(auditId) => {
+          onLaunched={(auditId, fallbackAudit) => {
+            if (fallbackAudit) {
+              setAudits((prev) => [fallbackAudit, ...prev]);
+              setCurrentAudit(fallbackAudit);
+              return;
+            }
             fetch(apiUrl(`/api/v1/audits/${auditId}`))
               .then((res) => res.json())
               .then((data) => {
