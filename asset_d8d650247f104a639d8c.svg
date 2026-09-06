@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="hsl(41 80% 55%)"/><stop offset="1" stop-color="hsl(124 75% 35%)"/></linearGradient>
+    <filter id="b"><feGaussianBlur stdDeviation="40"/></filter></defs>
+  <rect width="1280" height="720" fill="url(#g)"/>
+  <g filter="url(#b)"><circle cx="146" cy="706" r="80" fill="hsl(41 80% 55%)" opacity="0.35"/><circle cx="1054" cy="248" r="236" fill="hsl(85 85% 60%)" opacity="0.35"/><circle cx="1064" cy="246" r="208" fill="hsl(41 80% 55%)" opacity="0.35"/><circle cx="301" cy="344" r="122" fill="hsl(85 85% 60%)" opacity="0.35"/><circle cx="924" cy="466" r="210" fill="hsl(41 80% 55%)" opacity="0.35"/></g>
+  <rect x="40" y="40" width="120" height="44" rx="22" fill="rgba(0,0,0,.45)"/>
+  <text x="60" y="70" font-size="22" font-family="Inter,Arial" fill="#fff" font-weight="700" letter-spacing="2">IMAGE</text>
+  <rect x="0" y="500" width="1280" height="220" fill="rgba(0,0,0,.35)"/>
+  <text x="60" y="570" font-size="34" font-family="Inter,Arial" fill="#fff" font-weight="600">a majestic red panda astronaut</text><text x="60" y="616" font-size="34" font-family="Inter,Arial" fill="#fff" font-weight="600">floating over neon Tokyo at dawn,</text><text x="60" y="662" font-size="34" font-family="Inter,Arial" fill="#fff" font-weight="600">cinematic</text>
+  <text x="60" y="680" font-size="20" font-family="Inter,Arial" fill="rgba(255,255,255,.7)">Flux Pro</text>
+</svg>
