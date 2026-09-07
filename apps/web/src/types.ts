@@ -98,3 +98,87 @@ export interface AuditComparison {
   score_deltas: Record<string, { before: number; current: number; delta: number }>;
   pages_count_delta: number;
 }
+
+export interface GscQuery {
+  query: string;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  position: number;
+  intent: 'Informational' | 'Commercial' | 'Navigational' | 'Transactional';
+}
+
+export interface GscPageCoverage {
+  validIndexed: number;
+  excludedReasons: Array<{
+    reason: string;
+    count: number;
+    severity: 'high' | 'medium' | 'low';
+    sampleUrl?: string;
+  }>;
+  sitemapStatus: {
+    url: string;
+    submitted: number;
+    indexed: number;
+    lastRead: string;
+    status: 'Success' | 'Has Warnings' | 'Error';
+  };
+}
+
+export interface GscPerformanceData {
+  totalClicks: number;
+  totalImpressions: number;
+  avgCtr: number;
+  avgPosition: number;
+  trend: Array<{ date: string; clicks: number; impressions: number }>;
+  queries: GscQuery[];
+  coverage: GscPageCoverage;
+  coreWebVitals: {
+    lcp: { value: string; status: 'good' | 'needs-improvement' | 'poor' };
+    inp: { value: string; status: 'good' | 'needs-improvement' | 'poor' };
+    cls: { value: string; status: 'good' | 'needs-improvement' | 'poor' };
+  };
+}
+
+export interface AhrefsBacklink {
+  id: string;
+  sourceDomain: string;
+  sourceUrl: string;
+  targetUrl: string;
+  sourceDr: number;
+  anchor: string;
+  linkType: 'dofollow' | 'nofollow' | 'ugc' | 'sponsored';
+  firstSeen: string;
+  lastSeen: string;
+}
+
+export interface AhrefsOrganicKeyword {
+  keyword: string;
+  position: number;
+  prevPosition: number;
+  volume: number;
+  kd: number;
+  cpc: number;
+  traffic: number;
+  url: string;
+}
+
+export interface AhrefsIntelligenceData {
+  domainRating: number;
+  urlRating: number;
+  totalBacklinks: number;
+  referringDomains: number;
+  dofollowPercent: number;
+  organicTrafficMonthly: number;
+  trafficValueUsd: number;
+  anchors: Array<{ anchor: string; count: number; percentage: number; type: 'brand' | 'exact' | 'url' | 'generic' }>;
+  backlinks: AhrefsBacklink[];
+  keywords: AhrefsOrganicKeyword[];
+  rankDistribution: {
+    top3: number;
+    top10: number;
+    top50: number;
+    top100: number;
+  };
+}
+

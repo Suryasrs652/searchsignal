@@ -5,6 +5,8 @@ import { EvidenceModal } from './components/EvidenceModal';
 import { RoadmapView } from './components/RoadmapView';
 import { ComparisonDiff } from './components/ComparisonDiff';
 import { ExecutiveReportView } from './components/ExecutiveReportView';
+import { GscPerformanceView } from './components/GscPerformanceView';
+import { AhrefsExplorerView } from './components/AhrefsExplorerView';
 import { generateWebsiteAudit, AuditAnalysisReport } from './lib/auditEngine';
 import { Finding, Audit } from './types';
 import {
@@ -19,6 +21,8 @@ import {
   Globe,
   Loader2,
   CheckCircle2,
+  BarChart3,
+  Link2,
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -27,8 +31,9 @@ export const App: React.FC = () => {
   const [scanStep, setScanStep] = useState<string>('');
   const [report, setReport] = useState<AuditAnalysisReport>(() => generateWebsiteAudit('https://example.com'));
 
-  // Active Main Tab: 'executive' (Strengths & Weaknesses), 'roadmap' (Growth Strategy), 'findings' (Technical Explorer), 'comparison'
-  const [activeTab, setActiveTab] = useState<'executive' | 'roadmap' | 'findings' | 'comparison'>('executive');
+  // Active Main Tab: 'executive', 'roadmap', 'gsc', 'ahrefs', 'findings', 'comparison'
+  const [activeTab, setActiveTab] = useState<'executive' | 'roadmap' | 'gsc' | 'ahrefs' | 'findings' | 'comparison'>('executive');
+
   const [selectedFinding, setSelectedFinding] = useState<Finding | null>(null);
 
   // Filters for findings tab
@@ -259,10 +264,18 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-6 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center gap-6 text-xs text-slate-400">
             <div>
               <span className="text-slate-500 block">Overall Health:</span>
               <span className="text-lg font-black text-cyan-400">{report.scores.overall.score}/100</span>
+            </div>
+            <div>
+              <span className="text-slate-500 block">Ahrefs DR:</span>
+              <span className="text-lg font-black text-amber-400 font-mono">DR {report.ahrefs.domainRating}</span>
+            </div>
+            <div>
+              <span className="text-slate-500 block">GSC 28d Clicks:</span>
+              <span className="text-lg font-black text-blue-400 font-mono">{report.gsc.totalClicks.toLocaleString()}</span>
             </div>
             <div>
               <span className="text-slate-500 block">Audited At:</span>
@@ -294,20 +307,20 @@ export const App: React.FC = () => {
 
         {/* DASHBOARD NAVIGATION TABS */}
         <div className="space-y-6">
-          <div className="flex border-b border-slate-800 gap-6">
+          <div className="flex border-b border-slate-800 gap-6 overflow-x-auto">
             <button
               onClick={() => setActiveTab('executive')}
-              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition ${
+              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition whitespace-nowrap ${
                 activeTab === 'executive'
                   ? 'border-cyan-400 text-cyan-400'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
-              Strengths & Weaknesses Report ({report.strengths.length + report.weaknesses.length})
+              Strengths & Weaknesses ({report.strengths.length + report.weaknesses.length})
             </button>
             <button
               onClick={() => setActiveTab('roadmap')}
-              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition ${
+              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition whitespace-nowrap ${
                 activeTab === 'roadmap'
                   ? 'border-cyan-400 text-cyan-400'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -316,18 +329,40 @@ export const App: React.FC = () => {
               Perfect Growth Strategy ({report.recommendations.length})
             </button>
             <button
+              onClick={() => setActiveTab('gsc')}
+              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition whitespace-nowrap flex items-center gap-1.5 ${
+                activeTab === 'gsc'
+                  ? 'border-blue-400 text-blue-400'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4 text-blue-400" />
+              Google Search Console
+            </button>
+            <button
+              onClick={() => setActiveTab('ahrefs')}
+              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition whitespace-nowrap flex items-center gap-1.5 ${
+                activeTab === 'ahrefs'
+                  ? 'border-amber-400 text-amber-400'
+                  : 'border-transparent text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Link2 className="w-4 h-4 text-amber-400" />
+              Ahrefs Site Explorer
+            </button>
+            <button
               onClick={() => setActiveTab('findings')}
-              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition ${
+              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition whitespace-nowrap ${
                 activeTab === 'findings'
                   ? 'border-cyan-400 text-cyan-400'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
               }`}
             >
-              Technical Findings Explorer ({report.findings.length})
+              Technical Findings ({report.findings.length})
             </button>
             <button
               onClick={() => setActiveTab('comparison')}
-              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition ${
+              className={`pb-3 text-sm font-semibold tracking-wide border-b-2 transition whitespace-nowrap ${
                 activeTab === 'comparison'
                   ? 'border-cyan-400 text-cyan-400'
                   : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -344,6 +379,13 @@ export const App: React.FC = () => {
 
           {/* TAB 2: PERFECT GROWTH STRATEGY */}
           {activeTab === 'roadmap' && <RoadmapView recommendations={report.recommendations} />}
+
+          {/* TAB: GOOGLE SEARCH CONSOLE SUITE */}
+          {activeTab === 'gsc' && <GscPerformanceView gsc={report.gsc} domain={report.domain} />}
+
+          {/* TAB: AHREFS INTELLIGENCE SUITE */}
+          {activeTab === 'ahrefs' && <AhrefsExplorerView ahrefs={report.ahrefs} domain={report.domain} />}
+
 
           {/* TAB 3: TECHNICAL FINDINGS EXPLORER */}
           {activeTab === 'findings' && (
