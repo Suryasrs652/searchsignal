@@ -73,6 +73,63 @@ export const ExecutiveReportView: React.FC<Props> = ({ report, onOpenRoadmap }) 
         </div>
       </div>
 
+      {/* Production Evidence: Exact Observed HTML & Metadata Card */}
+      {report.pageMetadata && (
+        <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${report.isLiveAnalysis ? 'bg-emerald-400 animate-pulse' : 'bg-cyan-400'}`} />
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                {report.isLiveAnalysis ? 'Live Target DOM Extraction' : 'Target Document Architecture'}
+              </span>
+            </div>
+            <span className="text-[11px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800">
+              {report.pageMetadata.headingsCount} Headings • {report.pageMetadata.imagesCount} Images • {report.pageMetadata.schemaCount} Schemas
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="space-y-1.5 font-mono">
+              <div>
+                <span className="text-slate-500 font-sans">Observed &lt;title&gt;:</span>{' '}
+                <span className="text-white font-medium">{report.pageMetadata.title || '<Not Declared>'}</span>
+              </div>
+              <div>
+                <span className="text-slate-500 font-sans">Meta Description:</span>{' '}
+                <span className="text-slate-300">{report.pageMetadata.description || '<Not Declared>'}</span>
+              </div>
+              <div>
+                <span className="text-slate-500 font-sans">Canonical Tag:</span>{' '}
+                <span className="text-cyan-400">{report.pageMetadata.canonical || '<Not Declared>'}</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5 font-mono">
+              <div>
+                <span className="text-slate-500 font-sans">Primary &lt;h1&gt;:</span>{' '}
+                <span className="text-white font-medium">
+                  {report.pageMetadata.h1Tags.length > 0 ? report.pageMetadata.h1Tags[0] : '<No H1 Tag>'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 font-sans">Schema.org Types:</span>{' '}
+                <span className="text-amber-400">
+                  {report.pageMetadata.schemaTypesFound.length > 0
+                    ? report.pageMetadata.schemaTypesFound.join(', ')
+                    : '<Zero Schema Detected>'}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-500 font-sans">OpenGraph / Twitter Cards:</span>{' '}
+                <span className={report.pageMetadata.hasOgTags ? 'text-emerald-400' : 'text-slate-500'}>
+                  {report.pageMetadata.hasOgTags ? 'OG Ready' : 'Missing OG'} / {report.pageMetadata.hasTwitterTags ? 'Twitter Ready' : 'Missing Twitter'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Two-Column Breakdown: Strengths vs Weaknesses */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* STRENGTHS */}
