@@ -48,9 +48,12 @@ apps/web/.vite/
 .env.local
 .env.*.local
 
-# Operating System & IDEs
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/
 *.swp
+
+# open-seo repo ignores
+open-seo/node_modules/
+open-seo/.wrangler/
+open-seo/.logs/
+open-seo/dist/
+open-seo/.env.local
+open-seo/.env.*.local
